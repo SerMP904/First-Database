@@ -1,3 +1,7 @@
+create database codespaceacademy;
+
+use codespaceacademy; 
+
 # CodeSpaceAcademy
  /*
 ## Objetivo
@@ -105,31 +109,32 @@ Diseñar y construir una base de datos relacional sencilla para gestionar cursos
 */
 
 create table courses(
-	student_id INT AUTO_INCREMENT primary key,
+	course_id INT AUTO_INCREMENT PRIMARY KEY,
+	course_name VARCHAR(100) NOT NULL,
+	price DECIMAL(10,2) NOT NULL,
+	duration VARCHAR(50),
+	schedule VARCHAR(50),
+	difficulty VARCHAR(20)
+);
+
+create table students (
+	student_id INT AUTO_INCREMENT PRIMARY KEY,
 	first_name VARCHAR(50) NOT NULL,
 	last_name VARCHAR(50) NOT NULL,
 	dni VARCHAR(20) NOT NULL,
 	phone VARCHAR(20),
 	email VARCHAR(100),
 	date_of_birth DATE
-);
-
-create table students (
-	course_id INT AUTO_INCREMENT primary key,
-	course_name VARCHAR(100) NOT NULL,
-	price DECIMAL(10,2) NOT NULL,
-	duration VARCHAR(50),
-	schedule VARCHAR(50),
-	difficulty VARCHAR(20)
 ); 
 
-create table enrolments (
-	enrolment_id int auto_increment primary key,
-	student_id int,
-    course_id int,
-    year_enrolled int,
-    foreign key (student_id) references students(students_id) on delete cascade on update cascade,
-    foreign key (course_id) references courses(course_id) on delete cascade on update cascade
+create table enrollments (
+	enrollment_id INT AUTO_INCREMENT ,
+	student_id INT,
+    course_id INT,
+    year_enrolled INT,
+    PRIMARY KEY(enrollment_id),
+    foreign key (course_id) references courses(course_id) on delete cascade on update cascade,
+    foreign key (student_id) references students(student_id) on delete cascade on update cascade
 );
 
 insert into courses (course_name, price, duration, schedule, difficulty) values
@@ -158,11 +163,59 @@ insert into students (first_name, last_name, dni, phone, email, date_of_birth) v
     ('Iván', 'Moreno Villena', '467890123I', '555-2109', 'ivan@example.com', '2002-08-08'),
     ('Isabella', 'Clark', '012345678J', '555-8765', 'isabella@example.com', '2003-03-17');
     
-insert into enrolments (student_id, course_id, year_enrolled) values 
+insert into enrollments (student_id, course_id, year_enrolled) values 
 	(1, 2, 2023), (2, 1, 2021), (3, 3, 2022), (4, 4, 2021), (5, 5, 2023), (6, 6, 2020),
     (7, 7, 2018), (8, 8, 2021), (9, 9, 2013), (10, 10, 2023), (1, 3, 2023), (2, 4, 2022),
     (3, 5, 2021), (4, 6, 2023), (5, 7, 2022), (6, 8, 2021), (7, 9, 2023), (8, 10, 2022),
     (9, 1, 2021), (10, 2, 2023), (5, 3, 2022), (8, 6, 2020), (10, 4, 2023), (3, 8, 2021),
-    (6, 9, 2022), (2, 5, 2023), (7, 7, 2020), (9, 2, 2021), (1, 10, 2023), (4, 1, 2022)
+    (6, 9, 2022), (2, 5, 2023), (7, 7, 2020), (9, 2, 2021), (1, 10, 2023), (4, 1, 2022);
+
+
+
+select * from students;
+select * from courses;
+select * from enrollments;
+
+#1. Mostrar los cursos en orden ascendente según su precio
+select course_name from courses order by price desc;
+
+#2. Encuentra el número total de estudiantes matriculados en cada curso ordenados de mayor a menor.
+select course_name, count(course_name) as numero_mat
+from courses c 
+inner join enrollments e on c.course_id = e.course_id 
+group by course_name
+order by numero_mat desc;
+
+#3. Mostrar los nombres y correos electrónicos de todos los estudiantes.
+select first_name, email from students;
+
+#4. Obtener los cursos y sus precios mayores a $80.
+select course_name, price from courses where price > 80 order by price desc;
+
+#5. Mostrar los cursos en los que la duración sea de 4 meses.
+
+
+#6. Mostrar los estudiantes que han nacido en el 1998.
+#7. Seleccionar los alumnos cuyo nombre empieza por 'J'.
+#8. Mostrar los alumnos cuyo número de DNI contiene '12'.
+#9. Calcula la duración promedio de los cursos.
+#10. Obtener la cantidad de cursos que ha realizado el alumno 'Jhon'.
+#11. Obtener el nombre y apellidos de los estudiantes matriculados en el curso de "Computer Science".
+#12. Obtener el precio medio de los cursos por horario.
+#13. Obtén el curso más antiguo.
+#14. Obtener el nombre y apellidos de los estudiantes que se matricularon en algún curso en el año 2021.
+#15. Obtener el nombre del curso y su precio que se hayan matriculado en 2022 y tengan horario de mañana.
+#16. Obtener el gasto de cada uno de los alumnos, es decir, la suma total del precio de los cursos en los que se ha matriculado .
+#17. Mostrar los cursos en orden ascendente según su precio.
+#18. Crear una función para obtener el precio medio (sin decimales)  de todos los cursos. Tip: Para redondear sin decimales usar Round()
+#19. Crear un procedimiento almacenado para mostrar el nombre y la cantidad de cursos de cada dificultad, ordenados por la cantidad de cursos de manera descendente.
+#20. Crear una vista llamada getAdvancedStudents para obtener el nombre y apellidos y la dificultad(nivel) de los estudiantes que se han matriculado en algún curso de nivel "Advanced" ordenada por nombre de forma ascendente.
+
+
+
+
+
+
+
 
 
